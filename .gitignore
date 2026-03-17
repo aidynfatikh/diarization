@@ -1,0 +1,53 @@
+# Env and secrets
+.env
+.env.local
+.env.*.local
+
+# Data and outputs
+audio-test/
+clean/
+transcripts/
+crops/
+local_diarization/
+sampled_marked_flat/
+validation_results.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+*.egg-info/
+.eggs/
+*.egg
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / npm (validator-ui and any other JS)
+node_modules/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Next.js (validator-ui)
+.next/
+out/
+.vercel
+
+# OS and editors
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.log
+.cache/
