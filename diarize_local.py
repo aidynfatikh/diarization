@@ -39,6 +39,14 @@ def load_audio_as_16k_mono(path: Path) -> np.ndarray:
     return audio
 
 
+def check_audio_readable(path: Path):
+    try:
+        sf.info(str(path))
+        return True, None
+    except Exception as e:
+        return False, e
+
+
 def load_model():
     model = SortformerEncLabelModel.from_pretrained("nvidia/diar_streaming_sortformer_4spk-v2")
     model.eval()
@@ -143,13 +151,23 @@ def main():
             for i in range(0, len(audio_paths), BATCH_SIZE):
                 chunk_paths = audio_paths[i : i + BATCH_SIZE]
                 audio_arrays = []
+                valid_chunk_paths = []
                 for p in chunk_paths:
+                    ok, err = check_audio_readable(p)
+                    if not ok:
+                        print(f"Cannot open audio {p}: {err}")
+                        pbar.update(1)
+                        continue
                     audio_arrays.append(load_audio_as_16k_mono(p))
+                    valid_chunk_paths.append(p)
                     pbar.update(1)
+
+                if not audio_arrays:
+                    continue
 
                 results = diarize_batch(audio_arrays, model)
 
-                for audio_path, result in zip(chunk_paths, results):
+                for audio_path, result in zip(valid_chunk_paths, results):
                     out_path = json_root / f"{audio_path.name}.json"
                     out_path.write_text(json.dumps(result, ensure_ascii=False, indent=2))
                     segments = result["data"]["segments"]
