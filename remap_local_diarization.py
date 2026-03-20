@@ -51,11 +51,11 @@ def copy_crops_to_short_long(old_root: Path, short_root: Path, long_root: Path):
         rel = audio_path.relative_to(crops_root)
         dst = (short_root / rel) if duration <= 2.0 else (long_root / rel)
         dst.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(audio_path, dst)
+        shutil.move(str(audio_path), dst)
         copied += 1
         if copied % 5000 == 0:
-            print(f"Copied crops: {copied}")
-    print(f"Copied crops total: {copied}")
+            print(f"Moved crops: {copied}")
+    print(f"Moved crops total: {copied}")
 
 
 def main():
