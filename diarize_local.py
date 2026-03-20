@@ -75,6 +75,8 @@ def _parse_segments(raw_segments):
 
 
 def diarize_batch(audio_arrays: list, model) -> list:
+    if not audio_arrays:
+        return []
     predicted = model.diarize(
         audio=audio_arrays,
         batch_size=len(audio_arrays),
@@ -158,7 +160,12 @@ def main():
                         print(f"Cannot open audio {p}: {err}")
                         pbar.update(1)
                         continue
-                    audio_arrays.append(load_audio_as_16k_mono(p))
+                    audio_np = load_audio_as_16k_mono(p)
+                    if audio_np.size == 0:
+                        print(f"Empty audio array {p}, skipping.")
+                        pbar.update(1)
+                        continue
+                    audio_arrays.append(audio_np)
                     valid_chunk_paths.append(p)
                     pbar.update(1)
 
